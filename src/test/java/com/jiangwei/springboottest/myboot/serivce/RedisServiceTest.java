@@ -5,7 +5,6 @@ import com.helijia.framework.redis.AliyunRedisServiceImpl;
 import com.jiangwei.springboottest.myboot.MybootApplicationTests;
 import com.jiangwei.springboottest.myboot.domains.Student;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.Set;
