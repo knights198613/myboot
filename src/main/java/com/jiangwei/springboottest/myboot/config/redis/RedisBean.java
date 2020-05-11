@@ -32,7 +32,7 @@ public class RedisBean {
         redisService.setPort(Integer.valueOf(redisConfig.getPort()));
         SimplePasswordCallback simplePasswordCallback = new SimplePasswordCallback();
         simplePasswordCallback.setPassword(redisConfig.getPassword());
-        redisService.setPassword(simplePasswordCallback.getEncryPassword());
+        redisService.setPassword(simplePasswordCallback.getPassword());
         return redisService;
     }
 }
