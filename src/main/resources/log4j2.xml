@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+    <Properties>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss,SSS}}{faint} %clr{${LOG_LEVEL_PATTERN}} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n</Property>
+        <Property name="FILE_LOG_PATTERN">app:@app.name@ %trace{traceId}%d [%c]-[%t]-[%M]-[%L]-[%p] %m%n</Property>
+        <Property name="FILE_PATH">@log.path@</Property>
+        <Property name="LOGLEVEL">@log.level@</Property>
+    </Properties>
+
+    <appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{DEFAULT} %highlight{%5p}  %clr{%pid}{magenta} --- [%15.15t] %cyan{%-40.-40c{1.}}: %m%n" disableAnsi="false"/>
+        </Console>
+
+        <HLJAppender name="APP" filePath="${FILE_PATH}" fileName="sys.log" append="true">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
+        </HLJAppender>
+
+        <!--<Async name="Async">-->
+            <!--<AppenderRef ref="APP"/>-->
+        <!--</Async>-->
+    </appenders>
+
+
+    <loggers>
+        <root level="${LOGLEVEL}">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="APP"/>
+        </root>
+    </loggers>
+
+</configuration>

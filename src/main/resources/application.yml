@@ -1,0 +1,15 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: @app.name@
+
+
+logging:
+  config: classpath:log4j2.xml
+
+redis:
+  host: @redis.host@
+  port: @redis.port@
+  password: @redis.password@
