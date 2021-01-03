@@ -15,20 +15,12 @@
             <PatternLayout pattern="%d{DEFAULT} %highlight{%5p}  %clr{%pid}{magenta} --- [%15.15t] %cyan{%-40.-40c{1.}}: %m%n" disableAnsi="false"/>
         </Console>
 
-        <HLJAppender name="APP" filePath="${FILE_PATH}" fileName="sys.log" append="true">
-            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
-        </HLJAppender>
-
-        <!--<Async name="Async">-->
-            <!--<AppenderRef ref="APP"/>-->
-        <!--</Async>-->
     </appenders>
 
 
     <loggers>
         <root level="${LOGLEVEL}">
             <appender-ref ref="Console"/>
-            <appender-ref ref="APP"/>
         </root>
     </loggers>
 

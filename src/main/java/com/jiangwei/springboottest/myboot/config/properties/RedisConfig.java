@@ -16,7 +16,19 @@ import org.springframework.stereotype.Component;
 @Data
 public class RedisConfig {
 
-    private String host;
-    private String port;
-    private String password;
+    private String address;
+
+    private Integer idleConnectionTimeout;
+
+    private Integer connectTimeout;
+
+    private Integer timeout;
+
+    private Integer retryAttempts;
+
+    private Integer retryInterval;
+
+    private Integer connectionMinimumIdleSize;
+
+    private Integer connectionPoolSize;
 }

@@ -1,10 +1,10 @@
 package com.jiangwei.springboottest.myboot.config.redis;
 
-import com.helijia.framework.datasource.cfg.SimplePasswordCallback;
-import com.helijia.framework.redis.AliyunRedisServiceImpl;
 import com.jiangwei.springboottest.myboot.config.properties.RedisConfig;
+import org.redisson.Redisson;
+import org.redisson.client.codec.StringCodec;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,26 +13,27 @@ import org.springframework.context.annotation.Configuration;
  * @createDate: 2020/5/11
  * @company: (C) Copyright WWW.HELIJIA.COM 2020
  * @since: JDK 1.8
- * @description: 创建redis客户端服务类
+ * @description: 创建 redisson 客户端服务类
  */
 @Configuration
 public class RedisBean {
-    @Value("${app.name}")
-    private String appName;
-    @Value("${app.group}")
-    private String appGroup;
 
 
-    @Bean(name = "redisService", initMethod = "init", destroyMethod = "shutdown")
-    public AliyunRedisServiceImpl build(@Qualifier("redisConfig") RedisConfig redisConfig) {
-        AliyunRedisServiceImpl redisService = new AliyunRedisServiceImpl();
-        redisService.setAppName(appName);
-        redisService.setNamespace(appGroup);
-        redisService.setHost(redisConfig.getHost());
-        redisService.setPort(Integer.valueOf(redisConfig.getPort()));
-        SimplePasswordCallback simplePasswordCallback = new SimplePasswordCallback();
-        simplePasswordCallback.setPassword(redisConfig.getPassword());
-        redisService.setPassword(simplePasswordCallback.getPassword());
-        return redisService;
+    @Bean(name = "redisson")
+    public Redisson build(@Qualifier("redisConfig") RedisConfig redisConfig) {
+        Config config = new Config();
+        //config.setCodec(new StringCodec());
+        config
+                .useSingleServer()
+                .setAddress(String.format("redis://%s", redisConfig.getAddress()))
+                .setIdleConnectionTimeout(redisConfig.getIdleConnectionTimeout())
+                .setTimeout(redisConfig.getTimeout())
+                .setConnectTimeout(redisConfig.getConnectTimeout())
+                .setRetryAttempts(redisConfig.getRetryAttempts())
+                .setRetryInterval(redisConfig.getRetryInterval())
+                .setConnectionMinimumIdleSize(redisConfig.getConnectionMinimumIdleSize())
+                .setConnectionPoolSize(redisConfig.getConnectionPoolSize());
+        Redisson redisson = (Redisson) Redisson.create(config);
+        return redisson;
     }
 }

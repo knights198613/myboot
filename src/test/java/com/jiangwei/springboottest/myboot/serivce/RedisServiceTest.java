@@ -1,13 +1,19 @@
 package com.jiangwei.springboottest.myboot.serivce;
 
 import com.alibaba.fastjson.JSON;
-import com.helijia.framework.redis.AliyunRedisServiceImpl;
 import com.jiangwei.springboottest.myboot.MybootApplicationTests;
 import com.jiangwei.springboottest.myboot.domains.Student;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.redisson.Redisson;
+import org.redisson.api.RBucket;
+import org.redisson.client.codec.StringCodec;
 
 import javax.annotation.Resource;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: wuma (wuma@helijia.com)
@@ -16,91 +22,54 @@ import java.util.Set;
  * @since: JDK 1.8
  * @description:
  */
+@Slf4j
 public class RedisServiceTest extends MybootApplicationTests {
 
     private final static String student_key = "sortedSetKey_students";
 
-    @Resource(name = "redisService")
-    AliyunRedisServiceImpl redisService;
-
+    @Resource(name = "redisson")
+    Redisson redisson;
 
 
     @Test
-    public void testZADD() {
-        Student student0 = new Student();
-        student0.setFrom("beijing");
-        student0.setName("xiaoming");
-        student0.setSex("男");
-        student0.setOrder(10);
+    public void testSaveObj() {
+        Student std = new Student();
+        std.setFrom("HeBei");
+        std.setName("John Tommy");
+        std.setOrder(1);
+        std.setSex("nan");
+        std.setId(123);
 
-        Student student1 = new Student();
-        student1.setFrom("lanzhou");
-        student1.setName("daxiong");
-        student1.setSex("女");
-        student1.setOrder(5);
+        List<Student> myList = new ArrayList<>();
+        myList.add(std);
+        Map<String, List<Student>> map = new HashMap<>();
+        map.put("3243UIJjiji", myList);
 
-        Student student2 = new Student();
-        student2.setFrom("tianjin");
-        student2.setName("shanjiang");
-        student2.setSex("男");
-        student2.setOrder(9);
+        save2Redis(map);
 
-        Student student3 = new Student();
-        student3.setFrom("成都");
-        student3.setName("qiuyu");
-        student3.setSex("nv");
-        student3.setOrder(9);
+        map = getStudentFromRedis();
 
-       redisService.zadd(student_key, student0.getOrder(), student0.toString());
-       redisService.zadd(student_key, student1.getOrder(), student1.toString());
-       redisService.zadd(student_key, student2.getOrder(), student2.toString());
-       redisService.zadd(student_key, student3.getOrder(), student3.toString());
-
-       System.out.println("###################");
+        System.out.println(JSON.toJSONString(map));
     }
 
-    @Test
-    public void testZCOUNT() {
-        double min = 0.00d;
-        double max = 50.00d;
-        Long result = redisService.zcount(student_key, min, max);
-        System.out.println("返回SortedSet集合个数为："+ result);
+
+    private void save2Redis(Map<String, List<Student>> map) {
+        String key = "std_123";
+        RBucket rBucket = redisson.getBucket(key);
+        rBucket.set(map);
     }
 
-    @Test
-    public void testZRANGE() {
-        long start = 0L;
-        long end = 20L;
-        Set<String> result = redisService.zrange(student_key, start, end);
-
-        System.out.println("返回结果："+ JSON.toJSONString(result));
+    private <V> V getStudentFromRedis() {
+        try {
+            String key = "std_123";
+            RBucket<V> rBucket = redisson.getBucket(key);
+            return rBucket.get();
+        } catch (Exception e) {
+            log.error("get has error", e);
+            throw e;
+        }
     }
 
-    @Test
-    public void testZRANK() {
-        Student student3 = new Student();
-        student3.setFrom("成都");
-        student3.setName("qiuyu");
-        student3.setSex("nv");
-        student3.setOrder(9);
 
-        Student student0 = new Student();
-        student0.setFrom("beijing");
-        student0.setName("xiaoming");
-        student0.setSex("男");
-        student0.setOrder(10);
 
-        Long result = redisService.zrank(student_key, student3.toString());
-        System.out.println("返回student3排名为："+result);
-
-        Long result1 = redisService.zrank(student_key, student0.toString());
-        System.out.println("返回student0排名为："+result);
-    }
-
-    @Test
-    public void testZREVRANGE() {
-        Set<String> resultSet = redisService.zrevrange(student_key, 0L, 10L);
-        System.out.println("返回sortedSet集合为："+ JSON.toJSONString(resultSet));
-
-    }
 }

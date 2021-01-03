@@ -1,5 +1,6 @@
 package com.jiangwei.springboottest.myboot.domains;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,7 +17,13 @@ public class Student implements Serializable {
     private static final long serialVersionUID = -4276389062429394366L;
 
     private String name;
+
+
     private String from;
+
     private String sex;
+
     private int order;
+
+    private int id;
 }

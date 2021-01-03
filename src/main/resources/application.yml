@@ -10,6 +10,12 @@ logging:
   config: classpath:log4j2.xml
 
 redis:
-  host: @redis.host@
-  port: @redis.port@
-  password: @redis.password@
+  address: @redis.address@
+  idleConnectionTimeout: @redis.idleConnectionTimeout@
+  connectTimeout: @redis.connectTimeout@
+  timeout: @redis.timeout@
+  retryAttempts: @redis.retryAttempts@
+  retryInterval: @redis.retryInterval@
+  connectionMinimumIdleSize: @redis.connectionMinimumIdleSize@
+  connectionPoolSize: @redis.connectionPoolSize@
+
