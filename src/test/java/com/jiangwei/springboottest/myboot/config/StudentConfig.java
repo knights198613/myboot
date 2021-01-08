@@ -1,5 +1,8 @@
-package com.jiangwei.springboottest.myboot.domains;
+package com.jiangwei.springboottest.myboot.config;
 
+import com.jiangwei.springboottest.myboot.condition.BillGatesCondition;
+import com.jiangwei.springboottest.myboot.condition.LinusCondition;
+import com.jiangwei.springboottest.myboot.domains.Student;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;

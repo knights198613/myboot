@@ -1,6 +1,7 @@
 package com.jiangwei.springboottest.myboot.domains;
 
 import com.alibaba.fastjson.JSON;
+import com.jiangwei.springboottest.myboot.config.StudentConfig;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

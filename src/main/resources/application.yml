@@ -9,6 +9,7 @@ spring:
 logging:
   config: classpath:log4j2.xml
 
+
 redis:
   address: @redis.address@
   idleConnectionTimeout: @redis.idleConnectionTimeout@
@@ -18,4 +19,5 @@ redis:
   retryInterval: @redis.retryInterval@
   connectionMinimumIdleSize: @redis.connectionMinimumIdleSize@
   connectionPoolSize: @redis.connectionPoolSize@
+
 
