@@ -55,12 +55,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- service mesh -->
-        <dependency>
-            <groupId>com.xiaoju.mesh</groupId>
-            <artifactId>mesh-sdk-all</artifactId>
-            <version>1.2.9</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
