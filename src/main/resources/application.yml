@@ -9,13 +9,14 @@ spring:
     username: @spring.datasource.username@
     password: @spring.datasource.password@
     driverClassName: @spring.datasource.driverClassName@
-    hikaricp:
-      connectionTimeout: @spring.datasource.hikaricp.connectionTimeout@
-      idleTimeout: @spring.datasource.hikaricp.idleTimeout@
-      maxLifetime: @spring.datasource.hikaricp.maxLifetime@
-      maximumPoolSize: @spring.datasource.hikaricp.maximumPoolSize@
-      minimumIdle: @spring.datasource.hikaricp.minimumIdle@
-      poolName: @spring.datasource.hikaricp.poolName@
+
+hikaricp:
+  connectionTimeout: @hikaricp.connectionTimeout@
+  idleTimeout: @hikaricp.idleTimeout@
+  maxLifetime: @hikaricp.maxLifetime@
+  maximumPoolSize: @hikaricp.maximumPoolSize@
+  minimumIdle: @hikaricp.minimumIdle@
+  poolName: @hikaricp.poolName@
 
 
 logging:
