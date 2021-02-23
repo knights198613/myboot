@@ -4,6 +4,18 @@ server:
 spring:
   application:
     name: @app.name@
+  datasource:
+    url: @spring.datasource.url@
+    username: @spring.datasource.username@
+    password: @spring.datasource.password@
+    driverClassName: @spring.datasource.driverClassName@
+    hikaricp:
+      connectionTimeout: @spring.datasource.hikaricp.connectionTimeout@
+      idleTimeout: @spring.datasource.hikaricp.idleTimeout@
+      maxLifetime: @spring.datasource.hikaricp.maxLifetime@
+      maximumPoolSize: @spring.datasource.hikaricp.maximumPoolSize@
+      minimumIdle: @spring.datasource.hikaricp.minimumIdle@
+      poolName: @spring.datasource.hikaricp.poolName@
 
 
 logging:
@@ -18,4 +30,5 @@ redis:
   retryInterval: @redis.retryInterval@
   connectionMinimumIdleSize: @redis.connectionMinimumIdleSize@
   connectionPoolSize: @redis.connectionPoolSize@
+
 
