@@ -22,7 +22,6 @@ public class RedisBean {
     @Bean(name = "redisson")
     public Redisson build(@Qualifier("redisConfig") RedisConfig redisConfig) {
         Config config = new Config();
-        //config.setCodec(new StringCodec());
         config
                 .useSingleServer()
                 .setAddress(String.format("redis://%s", redisConfig.getAddress()))

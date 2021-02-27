@@ -7,6 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
+
 /**
  * @author: weijiang
  * @date: 2021/2/23
@@ -23,7 +25,7 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public HikariDataSource createDatasource(DataSourceProperties dataSourceProperties, HikariConfig hikariConfig) {
+    public DataSource createDatasource(DataSourceProperties dataSourceProperties, HikariConfig hikariConfig) {
         hikariConfig.setJdbcUrl(dataSourceProperties.getUrl());
         hikariConfig.setPassword(dataSourceProperties.getPassword());
         hikariConfig.setUsername(dataSourceProperties.getUsername());
