@@ -4,11 +4,13 @@ import com.google.common.collect.Lists;
 import com.jiangwei.springboottest.myboot.MybootApplicationTests;
 import com.jiangwei.springboottest.myboot.domains.Student;
 import org.junit.Test;
+import org.redisson.api.RBucket;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: weijiang
@@ -31,6 +33,16 @@ public class RedissonMapTest extends MybootApplicationTests {
             List<Student> list = Lists.newArrayList(std);
             rMapCache.put(fieldKey+i, list);
         }
+
+        System.out.println("sssssssssss");
+    }
+
+
+    @Test
+    public void testSet() {
+        String key = "mytest_";
+        RBucket<Integer> rBucket = redissonClient.getBucket(key);
+        rBucket.trySet(20, 600, TimeUnit.SECONDS);
 
         System.out.println("sssssssssss");
     }
