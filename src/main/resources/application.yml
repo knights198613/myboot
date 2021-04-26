@@ -33,3 +33,17 @@ redis:
   connectionPoolSize: @redis.connectionPoolSize@
 
 
+
+redis-client:
+  service: @redis-client.service@
+  timeout: @redis-client.timeout@
+  pool:
+    maxIdle: @redis-client.pool.maxIdle@
+    maxTotal: @redis-client.pool.maxTotal@
+    maxWaitMillis: @redis-client.pool.maxWaitMillis@
+    testOnBorrow: @redis-client.pool.testOnBorrow@
+
+
+arthas:
+  agent-id: @app.name@
+  tunnel-server: ws://127.0.0.1:7777/ws

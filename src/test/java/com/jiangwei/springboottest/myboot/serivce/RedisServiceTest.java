@@ -6,6 +6,7 @@ import com.jiangwei.springboottest.myboot.domains.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.redisson.Redisson;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.client.codec.StringCodec;
 
@@ -68,6 +69,25 @@ public class RedisServiceTest extends MybootApplicationTests {
             log.error("get has error", e);
             throw e;
         }
+    }
+
+
+    @Test
+    public void testAtomicLong() {
+        atomicLongOper(10);
+    }
+
+    private void atomicLongOper(long x) {
+        long result = 0L;
+        String key = "hh:orderCount";
+        RAtomicLong rAtomicLong = redisson.getAtomicLong(key);
+        if(rAtomicLong.get() < 0L) {
+            result = rAtomicLong.addAndGet(x);
+        }else {
+            result = rAtomicLong.addAndGet(-x);
+        }
+
+        System.out.println(result);
     }
 
 

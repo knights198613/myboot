@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration status="info">
     <Properties>
-        <!--<Property name="FILE_LOG_PATTERN">app:@app.name@ %trace{traceId}%d [%c]-[%t]-[%M]-[%L]-[%p] %m%n</Property>
-        <Property name="FILE_PATH">@log.path@</Property>-->
+        <Property name="FILE_LOG_PATTERN">app:@app.name@ %trace{traceId}%d [%c]-[%t]-[%M]-[%L]-[%p] %m%n</Property>
+        <Property name="FILE_PATH">@log.path@</Property>
         <Property name="LOGLEVEL">@log.level@</Property>
     </Properties>
 
@@ -11,13 +11,49 @@
             <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="%d{DEFAULT} %highlight{%5p}  %clr{%pid}{magenta} --- [%15.15t] %cyan{%-40.-40c{1.}}: %m%n" disableAnsi="false"/>
         </Console>
+
+        <RollingRandomAccessFile name="biz-log" immediateFlush="false" fileName="${FILE_PATH}/app.log"
+                                 filePattern="${log_path}/app.log-%d{yyyy-MM-dd-HH}-%i.log">
+             <PatternLayout>
+                 <pattern>${FILE_LOG_PATTERN}</pattern>
+             </PatternLayout>
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="error-log" fileName="${FILE_PATH}/error.log"
+                                 filePattern="${log_path}/error.log-%d{yyyy-MM-dd}-%i.log"
+                                 immediateFlush="true">
+            <PatternLayout>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
     </appenders>
 
 
     <loggers>
         <root level="${LOGLEVEL}">
             <appender-ref ref="Console"/>
+            <appender-ref ref="error-log"/>
         </root>
+        <AsyncLogger name="async-logger" level="info">
+            <appender-ref ref="biz-log"/>
+        </AsyncLogger>
     </loggers>
 
 </configuration>
