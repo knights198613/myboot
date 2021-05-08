@@ -12,8 +12,8 @@
             <PatternLayout pattern="%d{DEFAULT} %highlight{%5p}  %clr{%pid}{magenta} --- [%15.15t] %cyan{%-40.-40c{1.}}: %m%n" disableAnsi="false"/>
         </Console>
 
-        <RollingRandomAccessFile name="biz-log" immediateFlush="false" fileName="${FILE_PATH}/app.log"
-                                 filePattern="${log_path}/app.log-%d{yyyy-MM-dd-HH}-%i.log">
+        <RollingRandomAccessFile name="biz-log" immediateFlush="false" append="false" fileName="${FILE_PATH}/app.log"
+                                 filePattern="${FILE_PATH}/app.log-%d{yyyy-MM-dd-HH}-%i" bufferSize="1024">
              <PatternLayout>
                  <pattern>${FILE_LOG_PATTERN}</pattern>
              </PatternLayout>
@@ -29,7 +29,7 @@
         </RollingRandomAccessFile>
 
         <RollingRandomAccessFile name="error-log" fileName="${FILE_PATH}/error.log"
-                                 filePattern="${log_path}/error.log-%d{yyyy-MM-dd}-%i.log"
+                                 filePattern="${FILE_PATH}/error.log-%d{yyyy-MM-dd}-%i"
                                  immediateFlush="true">
             <PatternLayout>
                 <pattern>${FILE_LOG_PATTERN}</pattern>
@@ -39,7 +39,7 @@
             </Filters>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="20"/>
         </RollingRandomAccessFile>
@@ -50,10 +50,11 @@
         <root level="${LOGLEVEL}">
             <appender-ref ref="Console"/>
             <appender-ref ref="error-log"/>
-        </root>
-        <AsyncLogger name="async-logger" level="info">
             <appender-ref ref="biz-log"/>
-        </AsyncLogger>
+        </root>
+        <!--<AsyncLogger name="async-logger" level="info">
+
+        </AsyncLogger>-->
     </loggers>
 
 </configuration>
