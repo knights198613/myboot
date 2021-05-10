@@ -115,11 +115,11 @@
             <artifactId>guava</artifactId>
             <version>30.1-jre</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.taobao.arthas</groupId>
             <artifactId>arthas-spring-boot-starter</artifactId>
             <version>${arthas.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.lmax</groupId>

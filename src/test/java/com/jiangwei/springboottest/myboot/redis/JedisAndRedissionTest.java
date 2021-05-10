@@ -30,7 +30,7 @@ public class JedisAndRedissionTest extends MybootApplicationTests {
 
     @Test
     public void testRedissionSetBucket() {
-        String key = "mytest_page";
+        String key = "proxy_mytest_page";
 
 
         Page<Student> pages = new Page<>();

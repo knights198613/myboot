@@ -1,7 +1,6 @@
 package com.jiangwei.springboottest.myboot.config.redis;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,10 +25,10 @@ public class RedisProtocolBox {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    @Resource(name = "jedis")
+    @Resource(name = "jedisClient")
     private Jedis jedisClient;
 
-    @Resource(name = "jedis")
+    @Resource(name = "jedisClient")
     private Jedis fusionClient;
 
     @Resource
