@@ -1,14 +1,7 @@
 package com.jiangwei.springboottest.myboot.redis;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jiangwei.springboottest.myboot.MybootApplicationTests;
 import com.jiangwei.springboottest.myboot.config.redis.RedisProtocolBox;
 import com.jiangwei.springboottest.myboot.domains.Page;
@@ -134,6 +127,20 @@ public class JedisAndRedissionTest extends MybootApplicationTests {
 
         System.out.println(JSON.toJSONString(myPage));
 
+    }
+
+    @Test
+    public void testMap2Jedis() {
+        String key = "myMap_test";
+
+        Map<String, Integer> advisor = new HashMap<>();
+        advisor.put("Stephon", 34);
+        advisor.put("Tomiit", 56);
+
+        redisProtocolBox.setObj2RedisWithExpSecond(key, advisor, 500);
+
+        Map<String, Integer> advisor1 = redisProtocolBox.getObjFromRedis(key, new TypeReference<Map<String, Integer>>() {});
+        System.out.println(JSON.toJSONString(advisor1));
     }
 
 }
