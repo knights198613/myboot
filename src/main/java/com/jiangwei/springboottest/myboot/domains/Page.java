@@ -2,6 +2,7 @@ package com.jiangwei.springboottest.myboot.domains;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,10 @@ import java.util.List;
  **/
 
 @Data
-public class Page<T> {
+public class Page<T> implements Serializable {
+
+    private static final long serialVersionUID = -7396594884367706052L;
+
 
     private boolean status;
 

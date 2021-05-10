@@ -41,7 +41,7 @@ public class RedisBean {
     }
 
 
-    @Bean
+    @Bean(name = "jedis")
     public Jedis createJedis(@Qualifier("redisConfig") RedisConfig redisConfig) {
         GenericObjectPoolConfig genericObjectPoolConfig = new GenericObjectPoolConfig();
         genericObjectPoolConfig.setMaxTotal(redisConfig.getConnectionPoolSize());
