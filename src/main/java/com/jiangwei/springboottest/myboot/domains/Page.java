@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: weijiang
@@ -26,6 +27,10 @@ public class Page<T> implements Serializable {
     private Integer pageNum;
 
     private Integer totalNum;
+
+    private Object obj;
+
+    private Map<String, Integer> advisor;
 
 
 }

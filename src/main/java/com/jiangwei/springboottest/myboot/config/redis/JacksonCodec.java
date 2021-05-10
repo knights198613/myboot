@@ -3,10 +3,10 @@ package com.jiangwei.springboottest.myboot.config.redis;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -27,37 +27,38 @@ public class JacksonCodec implements Serializable {
 
     private ObjectMapper objMapper;
 
-    @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY, setterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY, isGetterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-    public static class ThrowableMixIn {
-
-    }
-
 
     public JacksonCodec() {
         this(new ObjectMapper());
     }
 
-    public JacksonCodec(ObjectMapper objMapper) {
-        this.objMapper = objMapper.copy();
+    public JacksonCodec(ObjectMapper objectMapper) {
+        this.objMapper = objectMapper.copy();
         initConfig(objMapper);
-        initHandlerType(objMapper);
+        //initHandlerType(objMapper);
     }
 
-    private void initConfig(ObjectMapper objectMapper) {
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
+    private void initConfig(ObjectMapper objMapper) {
+        objMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objMapper.setVisibility(objMapper.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY).withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-        objectMapper.addMixIn(Throwable.class, ThrowableMixIn.class);
+        objMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objMapper.configure(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+        objMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
+        objMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        // warm up
+        try {
+            byte[] s = objMapper.writeValueAsBytes(1);
+            objMapper.readValue(s, Object.class);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
-    private void initHandlerType(ObjectMapper objectMapper) {
+    private void initHandlerType(ObjectMapper objMapper) {
         TypeResolverBuilder<?> mapTyper = new ObjectMapper.DefaultTypeResolverBuilder(ObjectMapper.DefaultTyping.NON_FINAL) {
             public boolean useForType(JavaType t) {
                 switch (_appliesFor) {
@@ -85,12 +86,13 @@ public class JacksonCodec implements Serializable {
         };
         mapTyper.init(JsonTypeInfo.Id.CLASS, null);
         mapTyper.inclusion(JsonTypeInfo.As.PROPERTY);
-        objectMapper.setDefaultTyping(mapTyper);
+        objMapper.setDefaultTyping(mapTyper);
+        objMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 
         // warm up
         try {
-            byte[] s = objectMapper.writeValueAsBytes(1);
-            objectMapper.readValue(s, Object.class);
+            byte[] s = objMapper.writeValueAsBytes(1);
+            objMapper.readValue(s, Object.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -114,29 +116,25 @@ public class JacksonCodec implements Serializable {
     /**
      * 将String JSON 反序列化成 Java Object
      * @param json
-     * @param vClass
+     * @param typeReference
      * @param <V>
      * @return
      */
-    public <V> V decodeVal(String json, Class... vClass) {
+    public <V> V decodeVal(String json, TypeReference<V> typeReference) {
         V val = null;
         try {
             if(StringUtils.isNotEmpty(json)) {
-                if(vClass != null && vClass.length == 1) {
-                    JavaType javaType = objMapper.getTypeFactory().constructType(vClass[0]);
-                    val = objMapper.readValue(json, javaType);
-                }else if(vClass != null && vClass.length > 1) {
-                    Class[] subVClass = ArrayUtils.subarray(vClass, 0, vClass.length-1);
-                    JavaType javaType = objMapper.getTypeFactory().constructParametricType(vClass[0], subVClass);
-                    val = objMapper.readValue(json, javaType);
+                if(null != typeReference) {
+                    val = objMapper.readValue(json, typeReference);
                 }
             }else {
                 return null;
             }
-        } catch (IOException e) {
-            log.error("_JacksonCodec_decodeVal_ERROR||json={}||vClass={}", json, vClass, e);
+        } catch (Exception e) {
+            log.error("_JacksonCodec_decodeVal_ERROR||json={}||type={}", json, typeReference, e);
         }
         return val;
     }
+
 
 }

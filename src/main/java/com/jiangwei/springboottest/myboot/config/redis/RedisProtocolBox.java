@@ -1,6 +1,7 @@
 package com.jiangwei.springboottest.myboot.config.redis;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +10,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Type;
 
 /**
  * @author: weijiang
@@ -22,8 +24,6 @@ public class RedisProtocolBox {
 
     private static final String DEFAULT_CACHE = "so-center";
     private static final String DEFAULT_KEY_PREFIX = "proxy";
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @Resource(name = "jedisClient")
     private Jedis jedisClient;
@@ -39,18 +39,18 @@ public class RedisProtocolBox {
      * 从redis中获取对象
      * NOTE: 本方法只是实现了泛型的泛型对象转化，如果泛型超过2层嵌套，本方法不适用
      * @param name
-     * @param vClass
+     * @param typeReference
      * @param <V>
      * @return
      */
-    public <V> V getObjFromRedis(String name, Class... vClass) {
+    public <V> V getObjFromRedis(String name, TypeReference<V> typeReference) {
         try {
             String key = buildKey(name);
             String val = jedisClient.get(key);
-            return jacksonCodec.decodeVal(val, vClass);
+            return jacksonCodec.decodeVal(val, typeReference);
         } catch (Exception e) {
             log.error("_redisProtocolBox_Error||method=getObjFromRedis||name={}||vClass={}||errorMsg={}.",
-                    name, vClass.toString(), e.getMessage());
+                    name, typeReference.toString(), e.getMessage());
         }
         return null;
 
@@ -60,18 +60,18 @@ public class RedisProtocolBox {
      * 从fusion中获取对象
      * NOTE: 本方法只是实现了泛型的泛型对象转化，如果泛型超过2层嵌套，本方法不适用
      * @param name
-     * @param vClass
+     * @param typeReference
      * @param <V>
      * @return
      */
-    public <V> V getObjFromFusion(String name, Class... vClass) {
+    public <V> V getObjFromFusion(String name, TypeReference<V> typeReference) {
         try {
             String key = buildKey(name);
             String val = fusionClient.get(key);
-            return jacksonCodec.decodeVal(val, vClass);
+            return jacksonCodec.decodeVal(val, typeReference);
         } catch (Exception e) {
             log.error("_redisProtocolBox_Error||method=getObjFromFusion||name={}||vClass={}||errorMsg={}.",
-                    name, vClass.toString(), e.getMessage());
+                    name, typeReference.toString(), e.getMessage());
         }
         return null;
     }
@@ -89,7 +89,7 @@ public class RedisProtocolBox {
     public boolean setObj2RedisWithExpSecond(String key, Object value, int expiredTime) {
         try {
             String cacheKey = buildKey(key);
-            String val = objectMapper.writeValueAsString(value);
+            String val = jacksonCodec.encodeVal(value);
             SetParams setParams = SetParams.setParams();
             String rest = jedisClient.set(cacheKey, val, setParams.ex(expiredTime));
             if (StringUtils.isNotEmpty(rest) && "OK".equals(rest)) {
