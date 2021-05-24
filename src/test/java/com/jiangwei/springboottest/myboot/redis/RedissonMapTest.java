@@ -130,9 +130,9 @@ public class RedissonMapTest extends MybootApplicationTests {
     @Test
     public void testRmap() {
         String key = "myMap_TTL";
-        /*RMap<Long, Integer> rMap = redissonClient.getMap(key);
+        RMap<Long, Integer> rMap = redissonClient.getMap(key);
         rMap.put(123L, 11);
-        rMap.expire(15L, TimeUnit.MINUTES);*/
+        rMap.expire(15L, TimeUnit.MINUTES);
 
         RMapCache<Long, Integer> rMapCache = redissonClient.getMapCache(key);
         rMapCache.put(123L, 1122, 15L, TimeUnit.MINUTES);
