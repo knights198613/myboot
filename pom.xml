@@ -17,6 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <arthas.version>3.5.0</arthas.version>
+        <sentinel.version>1.8.1</sentinel.version>
     </properties>
 
     <dependencies>
@@ -125,6 +126,13 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>3.4.2</version>
+        </dependency>
+
+        <!--阿里巴巴 sentinel-->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-core</artifactId>
+            <version>${sentinel.version}</version>
         </dependency>
 
 
