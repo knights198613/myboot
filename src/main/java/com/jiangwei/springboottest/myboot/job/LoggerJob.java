@@ -22,7 +22,7 @@ import java.util.List;
 public class LoggerJob {
 
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 4000)
     public void loggerInfo() {
 
         List<ShopUserNoticeEntity> shopUserNoticeEntities = Lists.newArrayList();
@@ -30,7 +30,9 @@ public class LoggerJob {
             shopUserNoticeEntities.add(createEntity());
         }
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
-        log.info("当前系统时间为："+curDateStr+"|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+        for(int x=0; x<5000; x++) {
+            log.info("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+        }
         shopUserNoticeEntities.clear();
     }
 
@@ -41,7 +43,9 @@ public class LoggerJob {
             shopUserNoticeEntities.add(createEntity());
         }
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
-        log.error("当前系统时间为："+curDateStr+"|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+
+        log.error("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+
         shopUserNoticeEntities.clear();
     }
 

@@ -6,14 +6,14 @@
         <Property name="LOGLEVEL">@log.level@</Property>
     </Properties>
 
-    <appenders>
+    <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="%d{DEFAULT} %highlight{%5p}  %clr{%pid}{magenta} --- [%15.15t] %cyan{%-40.-40c{1.}}: %m%n" disableAnsi="false"/>
         </Console>
 
         <RollingRandomAccessFile name="biz-log" immediateFlush="false" append="false" fileName="${FILE_PATH}/app.log"
-                                 filePattern="${FILE_PATH}/app.log-%d{yyyy-MM-dd-HH}-%i" bufferSize="1024">
+                                 filePattern="${FILE_PATH}/app.log-%d{yyyy-MM-dd-HH}-%i">
              <PatternLayout>
                  <pattern>${FILE_LOG_PATTERN}</pattern>
              </PatternLayout>
@@ -43,18 +43,17 @@
             </Policies>
             <DefaultRolloverStrategy max="20"/>
         </RollingRandomAccessFile>
-    </appenders>
+    </Appenders>
 
 
-    <loggers>
-        <root level="${LOGLEVEL}">
-            <appender-ref ref="Console"/>
-            <appender-ref ref="error-log"/>
-            <appender-ref ref="biz-log"/>
-        </root>
-        <!--<AsyncLogger name="async-logger" level="info">
-
-        </AsyncLogger>-->
-    </loggers>
+    <Loggers>
+        <AsyncLogger name="async-logger" level="${LOGLEVEL}" includeLocation="true">
+            <AppenderRef ref="biz-log"/>
+        </AsyncLogger>
+        <Root level="${LOGLEVEL}" includeLocation="true">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="error-log"/>
+        </Root>
+    </Loggers>
 
 </configuration>
