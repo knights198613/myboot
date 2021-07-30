@@ -22,7 +22,7 @@ import java.util.List;
 public class LoggerJob {
 
 
-    @Scheduled(fixedDelay = 4000)
+    @Scheduled(fixedDelay = 2000)
     public void loggerInfo() {
 
         List<ShopUserNoticeEntity> shopUserNoticeEntities = Lists.newArrayList();
@@ -30,21 +30,23 @@ public class LoggerJob {
             shopUserNoticeEntities.add(createEntity());
         }
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
-        for(int x=0; x<5000; x++) {
+        for(int x=0; x<100; x++) {
             log.info("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
         }
         shopUserNoticeEntities.clear();
     }
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 2000)
     public void loggerError() {
         List<ShopUserNoticeEntity> shopUserNoticeEntities = Lists.newArrayList();
         for(int i=0; i<100; i++) {
             shopUserNoticeEntities.add(createEntity());
         }
-        String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
 
-        log.error("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+        String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
+        for(int x=0; x<100; x++) {
+            log.error("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+        }
 
         shopUserNoticeEntities.clear();
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="info">
+<configuration status="trace">
     <Properties>
         <Property name="FILE_LOG_PATTERN">app:@app.name@ %trace{traceId}%d [%c]-[%t]-[%M]-[%L]-[%p] %m%n</Property>
         <Property name="FILE_PATH">@log.path@</Property>
@@ -12,25 +12,29 @@
             <PatternLayout pattern="%d{DEFAULT} %highlight{%5p}  %clr{%pid}{magenta} --- [%15.15t] %cyan{%-40.-40c{1.}}: %m%n" disableAnsi="false"/>
         </Console>
 
-        <RollingRandomAccessFile name="biz-log" immediateFlush="false" append="false" fileName="${FILE_PATH}/app.log"
+        <RollingRandomAccessFile name="BizLogAppender"
+                                 immediateFlush="false"
+                                 fileName="${FILE_PATH}/app.log"
                                  filePattern="${FILE_PATH}/app.log-%d{yyyy-MM-dd-HH}-%i">
              <PatternLayout>
                  <pattern>${FILE_LOG_PATTERN}</pattern>
              </PatternLayout>
             <Filters>
-                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+                <!--<ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>-->
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
                 <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
             </Filters>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-                <SizeBasedTriggeringPolicy size="1 MB"/>
+                <SizeBasedTriggeringPolicy size="4 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="20"/>
         </RollingRandomAccessFile>
 
-        <RollingRandomAccessFile name="error-log" fileName="${FILE_PATH}/error.log"
+        <RollingRandomAccessFile name="ErrorLogAppender"
+                                 fileName="${FILE_PATH}/error.log"
                                  filePattern="${FILE_PATH}/error.log-%d{yyyy-MM-dd}-%i"
-                                 immediateFlush="true">
+                                 immediateFlush="false">
             <PatternLayout>
                 <pattern>${FILE_LOG_PATTERN}</pattern>
             </PatternLayout>
@@ -39,20 +43,23 @@
             </Filters>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-                <SizeBasedTriggeringPolicy size="1 MB"/>
+                <SizeBasedTriggeringPolicy size="4 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="20"/>
         </RollingRandomAccessFile>
+
     </Appenders>
 
 
     <Loggers>
-        <AsyncLogger name="async-logger" level="${LOGLEVEL}" includeLocation="true">
-            <AppenderRef ref="biz-log"/>
+
+        <AsyncLogger name="com.jiangwei.springboottest.myboot" level="info"  additivity="false">
+            <AppenderRef ref="BizLogAppender"/>
         </AsyncLogger>
-        <Root level="${LOGLEVEL}" includeLocation="true">
+
+        <Root level="info">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="error-log"/>
+            <AppenderRef ref="ErrorLogAppender"/>
         </Root>
     </Loggers>
 
