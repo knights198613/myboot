@@ -87,7 +87,7 @@ public class JedisAndRedissionTest extends MybootApplicationTests {
     }
 
 
-    @Test
+    /*@Test
     public void testJackSon() {
         String key = "proxy_test_pageLLLL";
 
@@ -141,6 +141,6 @@ public class JedisAndRedissionTest extends MybootApplicationTests {
 
         Map<String, Integer> advisor1 = redisProtocolBox.getObjFromRedis(key, new TypeReference<Map<String, Integer>>() {});
         System.out.println(JSON.toJSONString(advisor1));
-    }
+    }*/
 
 }

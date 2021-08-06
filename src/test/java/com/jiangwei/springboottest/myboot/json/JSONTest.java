@@ -29,7 +29,7 @@ public class JSONTest extends MybootApplicationTests {
         FlashGoodCheapDTO dto = null;
         try {
             dto = mapper.readValue(jsonStr, FlashGoodCheapDTO.class);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println(dto.toString());
