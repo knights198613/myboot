@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.jiangwei.springboottest.myboot.entity.ShopUserNoticeEntity;
 import com.jiangwei.springboottest.myboot.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +19,13 @@ import java.util.List;
  * @description:
  **/
 
-@Slf4j
+//@Slf4j
 @Component
 public class LoggerJob {
 
+    private static Logger logger = LogManager.getLogger(LoggerJob.class);
 
-    @Scheduled(fixedDelay = 2000)
+    //@Scheduled(fixedDelay = 2000)
     public void loggerInfo() {
 
         List<ShopUserNoticeEntity> shopUserNoticeEntities = Lists.newArrayList();
@@ -31,23 +34,32 @@ public class LoggerJob {
         }
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
         for(int x=0; x<100; x++) {
-            log.info("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+            logger.info("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
         }
         shopUserNoticeEntities.clear();
     }
 
-    @Scheduled(fixedDelay = 2000)
+    /**
+     * 记录错误日志JOB
+     */
+    @Scheduled(fixedDelay = 60000)
     public void loggerError() {
+        doLogErrorMessage();
+    }
+
+    /**
+     * 记录错误日志
+     */
+    public void doLogErrorMessage() {
         List<ShopUserNoticeEntity> shopUserNoticeEntities = Lists.newArrayList();
         for(int i=0; i<100; i++) {
             shopUserNoticeEntities.add(createEntity());
         }
 
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
-        for(int x=0; x<100; x++) {
-            log.error("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
+        for(int x=0; x<3; x++) {
+            logger.error("当前系统时间为：" + curDateStr + "|| shopUserNoticeEntityList={}.", JSON.toJSONString(shopUserNoticeEntities));
         }
-
         shopUserNoticeEntities.clear();
     }
 

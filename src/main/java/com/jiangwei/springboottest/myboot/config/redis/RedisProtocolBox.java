@@ -1,16 +1,11 @@
 package com.jiangwei.springboottest.myboot.config.redis;
 
-import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Type;
 
 /**
  * @author: weijiang
@@ -86,7 +81,7 @@ public class RedisProtocolBox {
      * @param expiredTime
      */
 
-    public boolean setObj2RedisWithExpSecond(String key, Object value, int expiredTime) {
+    /*public boolean setObj2RedisWithExpSecond(String key, Object value, int expiredTime) {
         try {
             String cacheKey = buildKey(key);
             String val = jacksonCodec.encodeVal(value);
@@ -102,7 +97,7 @@ public class RedisProtocolBox {
                     key, JSON.toJSONString(value), expiredTime, e);
             return false;
         }
-    }
+    }*/
 
 
     /**
