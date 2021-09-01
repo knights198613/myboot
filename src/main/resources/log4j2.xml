@@ -49,11 +49,11 @@
 
 
     <Loggers>
-        <AsyncLogger name="com.jiangwei.springboottest.myboot" level="warn"  additivity="false">
+        <AsyncLogger name="com.jiangwei.springboottest.myboot" level="info"  additivity="true" includeLocation="true">
             <AppenderRef ref="BizLogAppender"/>
         </AsyncLogger>
 
-        <Root level="warn" additivity="false">
+        <Root level="warn" additivity="false" includeLocation="true">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="ErrorLogAppender"/>
         </Root>

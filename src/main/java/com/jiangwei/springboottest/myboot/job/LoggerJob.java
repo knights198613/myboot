@@ -19,22 +19,28 @@ import java.util.List;
  * @description:
  **/
 
-//@Slf4j
+@Slf4j
 @Component
 public class LoggerJob {
 
-    private static Logger logger = LogManager.getLogger(LoggerJob.class);
+    //private static Logger logger = LogManager.getLogger(LoggerJob.class);
 
     @Scheduled(fixedDelay = 2000)
     public void loggerInfo() {
+        doLogInfoMessage();
+    }
 
+    /**
+     * 记录Info日志
+     */
+    private void doLogInfoMessage() {
         List<ShopUserNoticeEntity> shopUserNoticeEntities = Lists.newArrayList();
         for(int i=0; i<500; i++) {
             shopUserNoticeEntities.add(createEntity());
         }
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
         for(int x=0; x<100; x++) {
-            logger.info("当前系统时间为={}, shopUserNoticeEntityList={}.", curDateStr, JSON.toJSONString(shopUserNoticeEntities));
+            log.info("当前系统时间为={}, shopUserNoticeEntityList={}.", curDateStr, JSON.toJSONString(shopUserNoticeEntities));
         }
         shopUserNoticeEntities.clear();
     }
@@ -58,7 +64,7 @@ public class LoggerJob {
 
         String curDateStr = TimeUtils.getCurrentDateString(null, new Date());
         for(int x=0; x<300; x++) {
-            logger.error("当前系统时间为={}, shopUserNoticeEntityList={}.", curDateStr, JSON.toJSONString(shopUserNoticeEntities));
+            log.error("当前系统时间为={}, shopUserNoticeEntityList={}.", curDateStr, JSON.toJSONString(shopUserNoticeEntities));
         }
         shopUserNoticeEntities.clear();
     }
