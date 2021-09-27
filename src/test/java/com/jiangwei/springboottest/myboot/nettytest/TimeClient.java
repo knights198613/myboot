@@ -7,6 +7,10 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author: weijiang
@@ -25,7 +29,7 @@ public class TimeClient {
                     .handler(new ChildClientChannelHandler());
             ChannelFuture channelFuture = b.connect(host, port).sync();
             channelFuture.channel().closeFuture().sync();
-        }finally {
+        } finally {
             clientGroup.shutdownGracefully();
         }
     }
@@ -46,27 +50,34 @@ public class TimeClient {
 class ChildClientChannelHandler extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
+        //加入编解码器处理 tcp粘包和读半包
+        ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+        ch.pipeline().addLast(new StringDecoder());
         ch.pipeline().addLast(new TimeClientHandler());
     }
 }
 
 class TimeClientHandler extends ChannelInboundHandlerAdapter {
+    AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        String sendMessage = "QUERY CURRENT TIME";
-        ByteBuf byteBuf = Unpooled.buffer(sendMessage.getBytes().length);
-        byteBuf.writeBytes(sendMessage.getBytes());
-        ctx.writeAndFlush(byteBuf);
+        for (int i = 0; i < 100; i++) {
+            String sendMessage = "QUERY CURRENT TIME" + System.lineSeparator();
+            ByteBuf byteBuf = Unpooled.buffer(sendMessage.getBytes().length);
+            byteBuf.writeBytes(sendMessage.getBytes());
+            ctx.writeAndFlush(byteBuf);
+        }
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf byteBuf = (ByteBuf) msg;
+        /*ByteBuf byteBuf = (ByteBuf) msg;
         byte[] recivedMsg = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(recivedMsg);
-        String reMssage = new String(recivedMsg, "UTF-8");
-        System.out.println("Recived server Time:"+reMssage);
+        String reMssage = new String(recivedMsg, "UTF-8");*/
+        String reMssage = (String) msg;
+        System.out.println("Recived server Time:" + reMssage+",counter:"+counter.incrementAndGet());
     }
 
     @Override
