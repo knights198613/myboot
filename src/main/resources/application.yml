@@ -31,12 +31,14 @@ redis:
   retryInterval: @redis.retryInterval@
   connectionMinimumIdleSize: @redis.connectionMinimumIdleSize@
   connectionPoolSize: @redis.connectionPoolSize@
+  password: @redis.password@
 
 
 
 redis-client:
   service: @redis-client.service@
   timeout: @redis-client.timeout@
+  password: @redis-client.password@
   pool:
     maxIdle: @redis-client.pool.maxIdle@
     maxTotal: @redis-client.pool.maxTotal@

@@ -35,6 +35,7 @@ public class RedisBean {
                 .setRetryAttempts(redisConfig.getRetryAttempts())
                 .setRetryInterval(redisConfig.getRetryInterval())
                 .setConnectionMinimumIdleSize(redisConfig.getConnectionMinimumIdleSize())
+                .setPassword(redisConfig.getPassword())
                 .setConnectionPoolSize(redisConfig.getConnectionPoolSize());
         Redisson redisson = (Redisson) Redisson.create(config);
         return redisson;
@@ -47,7 +48,11 @@ public class RedisBean {
         genericObjectPoolConfig.setMaxTotal(redisConfig.getConnectionPoolSize());
         genericObjectPoolConfig.setMinIdle(redisConfig.getConnectionMinimumIdleSize());
         String[] hostAndPort = redisConfig.getAddress().split(":");
-        JedisPool jedisPool = new JedisPool(genericObjectPoolConfig, hostAndPort[0], Integer.valueOf(hostAndPort[1]), redisConfig.getConnectTimeout());
+        JedisPool jedisPool = new JedisPool(genericObjectPoolConfig,
+                hostAndPort[0],
+                Integer.valueOf(hostAndPort[1]),
+                redisConfig.getConnectTimeout(),
+                redisConfig.getPassword());
         return jedisPool.getResource();
     }
 }

@@ -31,4 +31,6 @@ public class RedisConfig {
     private Integer connectionMinimumIdleSize;
 
     private Integer connectionPoolSize;
+
+    private String password;
 }
