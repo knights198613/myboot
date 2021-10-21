@@ -20,12 +20,12 @@ import java.util.List;
  **/
 
 @Slf4j
-@Component
+//@Component
 public class LoggerJob {
 
     //private static Logger logger = LogManager.getLogger(LoggerJob.class);
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 2000000)
     public void loggerInfo() {
         doLogInfoMessage();
     }
@@ -48,7 +48,7 @@ public class LoggerJob {
     /**
      * 记录错误日志JOB
      */
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 2000000)
     public void loggerError() {
         doLogErrorMessage();
     }

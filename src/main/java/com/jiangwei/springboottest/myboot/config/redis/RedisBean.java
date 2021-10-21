@@ -1,6 +1,8 @@
 package com.jiangwei.springboottest.myboot.config.redis;
 
 import com.jiangwei.springboottest.myboot.config.properties.RedisConfig;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.redisson.Redisson;
 import org.redisson.client.codec.StringCodec;
@@ -12,6 +14,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.net.URI;
+import java.time.Duration;
 
 /**
  * @author: wuma (wuma@helijia.com)
@@ -54,5 +57,18 @@ public class RedisBean {
                 redisConfig.getConnectTimeout(),
                 redisConfig.getPassword());
         return jedisPool.getResource();
+    }
+
+    @Bean(name="redisURI")
+    public RedisURI createReidsURI(@Qualifier("redisConfig") RedisConfig redisConfig) {
+        String[] hostAndPort = redisConfig.getAddress().split(":");
+        RedisURI redisURI = RedisURI.builder()
+                .withHost(hostAndPort[0])
+                .withPort(Integer.valueOf(hostAndPort[1]))
+                .withPassword(redisConfig.getPassword().toCharArray())
+                .withTimeout(Duration.ofMillis(redisConfig.getConnectTimeout()))
+                .withDatabase(0)
+                .build();
+        return redisURI;
     }
 }
