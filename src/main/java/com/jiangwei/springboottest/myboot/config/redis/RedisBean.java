@@ -3,6 +3,7 @@ package com.jiangwei.springboottest.myboot.config.redis;
 import com.jiangwei.springboottest.myboot.config.properties.RedisConfig;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.api.StatefulRedisConnection;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.redisson.Redisson;
 import org.redisson.client.codec.StringCodec;
@@ -70,5 +71,16 @@ public class RedisBean {
                 .withDatabase(0)
                 .build();
         return redisURI;
+    }
+
+    @Bean(name = "redisClient", destroyMethod ="shutdown" )
+    public RedisClient createRedisClient(RedisURI redisURI) {
+        RedisClient redisClient = RedisClient.create(redisURI);
+        return redisClient;
+    }
+
+    @Bean(name = "statefulRedisConnection", destroyMethod = "close")
+    public StatefulRedisConnection<String, String> createRedisConnection(RedisClient redisClient) {
+        return redisClient.connect();
     }
 }

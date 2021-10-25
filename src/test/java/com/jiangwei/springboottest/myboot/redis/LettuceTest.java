@@ -19,6 +19,12 @@ public class LettuceTest extends MybootApplicationTests {
     @Resource
     RedisURI redisURI;
 
+    @Resource
+    RedisClient redisClient;
+
+    @Resource
+    StatefulRedisConnection<String, String> statefulRedisConnection;
+
     @Test
     public void testInsertRedis() {
         RedisClient redisClient = RedisClient.create(redisURI);
@@ -39,5 +45,13 @@ public class LettuceTest extends MybootApplicationTests {
         System.out.println("get by key lettuce-test:" + result);
         connection.close();
         redisClient.shutdown();
+    }
+
+    @Test
+    public void testConnection() {
+        RedisCommands<String, String> commands = statefulRedisConnection.sync();
+        String result = commands.get("lettuce-test");
+        System.out.println("get by key lettuce-test:" + result);
+
     }
 }
