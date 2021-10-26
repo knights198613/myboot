@@ -1,9 +1,11 @@
 package com.jiangwei.springboottest.myboot.nettytest.http;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.stream.ChunkedFile;
+import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SystemPropertyUtil;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -63,9 +65,9 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
 
         if(file.isDirectory()) {
             if(path.endsWith("/")) {
-                sendList(ctx, file, path);
+                sendList(ctx, file, uri);
             }else {
-                sendRedirect(ctx, path+"/");
+                sendRedirect(ctx, uri+"/");
             }
             return;
         }
@@ -144,24 +146,54 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
         httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, mimetypesFileTypeMap.getContentType(file));
     }
 
+    private static final Pattern ALLOWED_FILE_NAME = Pattern.compile("[^-\\._]?[^<>&\\\"]*");
     /**
      * 列出文件目录
      * @param ctx
-     * @param file
-     * @param path
+     * @param dir
+     * @param uri
      */
-    private void sendList(ChannelHandlerContext ctx, File file, String path) {
-
+    private void sendList(ChannelHandlerContext ctx, File dir, String uri) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!DOCTYPE html>\r\n")
+                .append("<html><head><meta charset='utf-8' /><title>")
+                .append("Listing of:")
+                .append(uri)
+                .append("</title></head><body>\r\n")
+                .append("<h3> Listing of:")
+                .append(uri)
+                .append("</h3>\r\n")
+                .append("<ul>")
+                .append("<li><a href=\"..\">..</a></li>\r\n");
+        File[] files = dir.listFiles();
+        for(File file : files) {
+            if(file.isHidden() || !file.canRead()) {
+                continue;
+            }
+            String fileName  = file.getName();
+            if(!ALLOWED_FILE_NAME.matcher(fileName).matches()) {
+                continue;
+            }
+            sb.append("<li><a href=\""+file.getName()+"\"/>")
+                    .append(fileName)
+                    .append("</a></li>\r\n");
+        }
+        sb.append("</ul></body></html>\r\n");
+        ByteBuf byteBuf = ctx.alloc().buffer(sb.length());
+        byteBuf.writeCharSequence(sb.toString(), CharsetUtil.UTF_8);
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, OK, byteBuf);
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=utf-8");
+        sendAndCleanUpConnection(ctx, httpResponse);
     }
 
     /**
      * 文件目录跳转
      * @param ctx
-     * @param path
+     * @param newURI
      */
-    private void sendRedirect(ChannelHandlerContext ctx, String path) {
+    private void sendRedirect(ChannelHandlerContext ctx, String newURI) {
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, FOUND, Unpooled.EMPTY_BUFFER);
-        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
+        httpResponse.headers().set(HttpHeaderNames.LOCATION, newURI);
         sendAndCleanUpConnection(ctx, httpResponse);
     }
 
@@ -189,7 +221,10 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param status
      */
     private void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
-        ctx.writeAndFlush(status.toString());
+        ByteBuf byteBuf = Unpooled.copiedBuffer("Failure:"+status+"\r\n", CharsetUtil.UTF_8);
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, byteBuf);
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=utf-8");
+        sendAndCleanUpConnection(ctx, httpResponse);
     }
 
 
