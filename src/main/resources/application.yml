@@ -49,3 +49,11 @@ redis-client:
 arthas:
   agent-id: @app.name@
   tunnel-server: ws://127.0.0.1:7777/ws
+
+digger-agent:
+  collectorIp: 172.24.228.36
+  collectorPort: 8099
+  bizLineName: myBootTest
+  sysName: bootTestTest
+  appName: myboot
+
