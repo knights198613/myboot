@@ -1,6 +1,6 @@
 package com.jiangwei.springboottest.myboot.api;
 
-import com.cxyx.digger.agent.monitor.Digger;
+//import com.cxyx.digger.agent.monitor.Digger;
 import com.google.common.collect.Sets;
 import com.jiangwei.springboottest.myboot.domains.Student;
 import com.jiangwei.springboottest.myboot.services.StudentService;
@@ -27,22 +27,22 @@ public class StudentController {
     @ResponseBody
     public Student getStudentById(Integer id) {
         String traceId = "2348398494238jiueiuriewuiui898989";
-        Digger.buildDigger(traceId, this.getClass(), "getStudentById");
+        //Digger.buildDigger(traceId, this.getClass(), "getStudentById");
         Student student = null;
         try {
             if(id.intValue() % 2 == 0) {
                 throw new RuntimeException("故意制造异常模拟数据！");
             }
             student = studentService.getStudentById(id);
-            Digger.success(Sets.newHashSet(student), Sets.newHashSet(id),
-                    "查询学生", "通过学生id查询学生信息", null);
+            /*Digger.success(Sets.newHashSet(student), Sets.newHashSet(id),
+                    "查询学生", "通过学生id查询学生信息", null);*/
 
         } catch (Exception e) {
             e.printStackTrace();
-            Digger.error("40001", "查询学生发生异常",
-                    e, "查询学生", "通过学生id查询学生信息");
+            /*Digger.error("40001", "查询学生发生异常",
+                    e, "查询学生", "通过学生id查询学生信息");*/
         } finally {
-            Digger.finished();
+            /*Digger.finished();*/
         }
         return student;
     }
